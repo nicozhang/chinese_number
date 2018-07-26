@@ -1,4 +1,5 @@
 require 'strscan'
+require 'byebug'
 
 module ChineseNumber
 
@@ -43,10 +44,16 @@ module ChineseNumber
     DIGIT_TOKEN    = Regexp.new( "[#{DIGIT_MAP.keys.join}]" )
     MULTIPER_TOKEN = Regexp.new( "[#{MULTIPERS.keys.join}]" )
     TOKEN          = Regexp.new( "[#{(DIGIT_MAP.keys + MULTIPERS.keys).join}]+" )
+    MULTINUM       = /\d{2}/
 
     def parse word
       
       raise InvalidWord unless word =~ /\A#{TOKEN}\Z/
+      
+      # 匹配100万 10万 这类双数字
+      if word =~ MULTINUM
+        return /\d{2,}/.match(word)[0] + MULTIPERS[/\p{Han}/.match(word)[0]].to_s.gsub('1', '')
+      end
 
       # 类似“二零一二” 这种短语，可以直接拼数字返回
       unless word =~ MULTIPER_TOKEN
