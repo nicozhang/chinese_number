@@ -1,5 +1,4 @@
 require 'strscan'
-require 'byebug'
 
 module ChineseNumber
 
